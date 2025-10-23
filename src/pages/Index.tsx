@@ -122,7 +122,7 @@ const Index = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                My Todos
+                My Notes
               </h1>
               <p className="text-sm text-muted-foreground">
                 {stats.active} active, {stats.completed} completed
@@ -161,8 +161,8 @@ const Index = () => {
         <div className="space-y-2">
           {filteredTodos.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p className="text-lg">No todos here yet!</p>
-              <p className="text-sm mt-2">Add one above to get started.</p>
+              <p className="text-lg">No notes here yet!</p>
+              <p className="text-sm mt-2">Click above to create your first note.</p>
             </div>
           ) : (
             filteredTodos.map((todo) => (
@@ -170,6 +170,7 @@ const Index = () => {
                 key={todo.id}
                 id={todo.id}
                 title={todo.title}
+                content={todo.content}
                 completed={todo.completed}
                 onUpdate={fetchTodos}
               />
