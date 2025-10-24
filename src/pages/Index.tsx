@@ -17,6 +17,7 @@ const Index = () => {
   const [todos, setTodos] = useState<any[]>([]);
   const [filter, setFilter] = useState<FilterType>("all");
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -68,9 +69,28 @@ const Index = () => {
     }
   };
 
+  const checkAdminStatus = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .single();
+      
+      if (!error && data) {
+        setIsAdmin(data.role === "admin");
+      }
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchTodos();
+      checkAdminStatus();
     }
   }, [user]);
 
@@ -122,7 +142,7 @@ const Index = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                My Notes
+                {isAdmin ? "All Notes (Admin)" : "My Notes"}
               </h1>
               <p className="text-sm text-muted-foreground">
                 {stats.active} active, {stats.completed} completed
@@ -173,6 +193,8 @@ const Index = () => {
                 content={todo.content}
                 completed={todo.completed}
                 onUpdate={fetchTodos}
+                userId={isAdmin ? todo.user_id : undefined}
+                isAdminView={isAdmin}
               />
             ))
           )}

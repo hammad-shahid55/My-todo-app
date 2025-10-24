@@ -12,9 +12,11 @@ interface TodoItemProps {
   content?: string | null;
   completed: boolean;
   onUpdate: () => void;
+  userId?: string;
+  isAdminView?: boolean;
 }
 
-export const TodoItem = ({ id, title, content, completed, onUpdate }: TodoItemProps) => {
+export const TodoItem = ({ id, title, content, completed, onUpdate, userId, isAdminView }: TodoItemProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const { toast } = useToast();
@@ -84,6 +86,11 @@ export const TodoItem = ({ id, title, content, completed, onUpdate }: TodoItemPr
             >
               {title}
             </h3>
+            {isAdminView && userId && (
+              <p className="text-xs text-muted-foreground/70 mt-0.5 font-mono">
+                User: {userId.slice(0, 8)}...
+              </p>
+            )}
             {hasContent && !isExpanded && (
               <p className="text-sm text-muted-foreground mt-1 line-clamp-2 break-words">
                 {content}

@@ -12,6 +12,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [adminCredential, setAdminCredential] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -51,7 +52,7 @@ const Auth = () => {
           description: "You've successfully logged in.",
         });
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -61,9 +62,23 @@ const Auth = () => {
         
         if (error) throw error;
         
+        // If admin credential is provided and matches, assign admin role
+        if (adminCredential === "246810" && data.user) {
+          const { error: roleError } = await supabase
+            .from("user_roles")
+            .update({ role: "admin" })
+            .eq("user_id", data.user.id);
+          
+          if (roleError) {
+            console.error("Error assigning admin role:", roleError);
+          }
+        }
+        
         toast({
-          title: "Account created!",
-          description: "You can now start using the app.",
+          title: adminCredential === "246810" ? "Admin account created!" : "Account created!",
+          description: adminCredential === "246810" 
+            ? "You now have admin access to view all notes." 
+            : "You can now start using the app.",
         });
       }
     } catch (error: any) {
@@ -118,6 +133,22 @@ const Auth = () => {
                 className="transition-all duration-300 focus:shadow-soft"
               />
             </div>
+            {!isLogin && (
+              <div className="space-y-2">
+                <Label htmlFor="adminCredential">Admin Credential (Optional)</Label>
+                <Input
+                  id="adminCredential"
+                  type="password"
+                  placeholder="Enter admin credential"
+                  value={adminCredential}
+                  onChange={(e) => setAdminCredential(e.target.value)}
+                  className="transition-all duration-300 focus:shadow-soft"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Enter admin credential to create an admin account with access to all notes
+                </p>
+              </div>
+            )}
             <Button
               type="submit"
               className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 shadow-soft"
