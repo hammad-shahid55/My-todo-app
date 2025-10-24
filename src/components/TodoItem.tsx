@@ -12,11 +12,12 @@ interface TodoItemProps {
   content?: string | null;
   completed: boolean;
   onUpdate: () => void;
-  userId?: string;
+  userEmail?: string;
+  userName?: string | null;
   isAdminView?: boolean;
 }
 
-export const TodoItem = ({ id, title, content, completed, onUpdate, userId, isAdminView }: TodoItemProps) => {
+export const TodoItem = ({ id, title, content, completed, onUpdate, userEmail, userName, isAdminView }: TodoItemProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const { toast } = useToast();
@@ -73,10 +74,25 @@ export const TodoItem = ({ id, title, content, completed, onUpdate, userId, isAd
           <Checkbox
             checked={completed}
             onCheckedChange={handleToggle}
-            disabled={isUpdating}
+            disabled={isUpdating || isAdminView}
             className="mt-1 h-5 w-5 data-[state=checked]:bg-gradient-to-br data-[state=checked]:from-primary data-[state=checked]:to-accent shrink-0"
           />
           <div className="flex-1 min-w-0">
+            {isAdminView && userEmail && (
+              <div className="mb-2 px-3 py-1.5 bg-primary/10 rounded-lg inline-flex items-center gap-2 border border-primary/20 animate-fade-in">
+                <span className="text-sm">👤</span>
+                <div className="flex flex-col">
+                  {userName && (
+                    <p className="text-xs font-semibold text-primary">
+                      {userName}
+                    </p>
+                  )}
+                  <p className="text-xs text-primary/80">
+                    {userEmail}
+                  </p>
+                </div>
+              </div>
+            )}
             <h3
               className={`text-base font-medium transition-all duration-300 break-words ${
                 completed
@@ -86,11 +102,6 @@ export const TodoItem = ({ id, title, content, completed, onUpdate, userId, isAd
             >
               {title}
             </h3>
-            {isAdminView && userId && (
-              <p className="text-xs text-muted-foreground/70 mt-0.5 font-mono">
-                User: {userId.slice(0, 8)}...
-              </p>
-            )}
             {hasContent && !isExpanded && (
               <p className="text-sm text-muted-foreground mt-1 line-clamp-2 break-words">
                 {content}
@@ -112,15 +123,17 @@ export const TodoItem = ({ id, title, content, completed, onUpdate, userId, isAd
                 )}
               </Button>
             )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleDelete}
-              disabled={isUpdating}
-              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-destructive/10 hover:text-destructive"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            {!isAdminView && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleDelete}
+                disabled={isUpdating}
+                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-destructive/10 hover:text-destructive"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>

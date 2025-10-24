@@ -62,24 +62,35 @@ const Auth = () => {
         
         if (error) throw error;
         
-        // If admin credential is provided and matches, assign admin role
+        // If admin credential is provided and matches, call edge function to assign admin role
         if (adminCredential === "246810" && data.user) {
-          const { error: roleError } = await supabase
-            .from("user_roles")
-            .update({ role: "admin" })
-            .eq("user_id", data.user.id);
-          
-          if (roleError) {
-            console.error("Error assigning admin role:", roleError);
+          try {
+            const { error: roleError } = await supabase.functions.invoke('set-admin-role', {
+              body: { userId: data.user.id, adminCredential }
+            });
+            
+            if (roleError) {
+              console.error("Error assigning admin role:", roleError);
+              toast({
+                variant: "destructive",
+                title: "Warning",
+                description: "Account created but admin role assignment failed.",
+              });
+            } else {
+              toast({
+                title: "Admin account created!",
+                description: "You now have admin access to view all notes.",
+              });
+            }
+          } catch (roleError) {
+            console.error("Error calling set-admin-role:", roleError);
           }
+        } else {
+          toast({
+            title: "Account created!",
+            description: "You can now start using the app.",
+          });
         }
-        
-        toast({
-          title: adminCredential === "246810" ? "Admin account created!" : "Account created!",
-          description: adminCredential === "246810" 
-            ? "You now have admin access to view all notes." 
-            : "You can now start using the app.",
-        });
       }
     } catch (error: any) {
       toast({

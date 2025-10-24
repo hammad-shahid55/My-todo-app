@@ -53,13 +53,48 @@ const Index = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .from("todos")
-        .select("*")
-        .order("created_at", { ascending: false });
+      // Check if user is admin
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      const isUserAdmin = roleData?.role === "admin";
 
-      if (error) throw error;
-      setTodos(data || []);
+      if (isUserAdmin) {
+        // Admin: fetch all todos with user profiles
+        const { data, error } = await supabase
+          .from("todos")
+          .select(`
+            *,
+            profiles:user_id (
+              email,
+              full_name
+            )
+          `)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        // Map the data to include user info
+        const todosWithUsers = data?.map((todo: any) => ({
+          ...todo,
+          user_email: todo.profiles?.email || "Unknown User",
+          user_name: todo.profiles?.full_name || null
+        }));
+
+        setTodos(todosWithUsers || []);
+      } else {
+        // Regular user: fetch only their todos
+        const { data, error } = await supabase
+          .from("todos")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setTodos(data || []);
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -159,8 +194,8 @@ const Index = () => {
           </Button>
         </div>
 
-        {/* Add Todo */}
-        <AddTodo onAdd={fetchTodos} />
+        {/* Add Todo - Hidden for admins */}
+        {!isAdmin && <AddTodo onAdd={fetchTodos} />}
 
         {/* Filter Tabs */}
         <Tabs value={filter} onValueChange={(v) => setFilter(v as FilterType)} className="w-full">
@@ -182,7 +217,8 @@ const Index = () => {
           {filteredTodos.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <p className="text-lg">No notes here yet!</p>
-              <p className="text-sm mt-2">Click above to create your first note.</p>
+              {!isAdmin && <p className="text-sm mt-2">Click above to create your first note.</p>}
+              {isAdmin && <p className="text-sm mt-2">No user notes to display.</p>}
             </div>
           ) : (
             filteredTodos.map((todo) => (
@@ -193,7 +229,8 @@ const Index = () => {
                 content={todo.content}
                 completed={todo.completed}
                 onUpdate={fetchTodos}
-                userId={isAdmin ? todo.user_id : undefined}
+                userEmail={isAdmin ? todo.user_email : undefined}
+                userName={isAdmin ? todo.user_name : undefined}
                 isAdminView={isAdmin}
               />
             ))
