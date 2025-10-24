@@ -64,26 +64,35 @@ const Index = () => {
       const isUserAdmin = roleData?.role === "admin";
 
       if (isUserAdmin) {
-        // Admin: fetch all todos with user profiles
-        const { data, error } = await supabase
+        // Admin: fetch all todos
+        const { data: todosData, error: todosError } = await supabase
           .from("todos")
-          .select(`
-            *,
-            profiles:user_id (
-              email,
-              full_name
-            )
-          `)
+          .select("*")
           .order("created_at", { ascending: false });
 
-        if (error) throw error;
+        if (todosError) throw todosError;
+
+        // Fetch all profiles
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("profiles")
+          .select("id, email, full_name");
+
+        if (profilesError) throw profilesError;
+
+        // Create a map of user_id to profile
+        const profilesMap = new Map(
+          profilesData?.map(p => [p.id, p]) || []
+        );
 
         // Map the data to include user info
-        const todosWithUsers = data?.map((todo: any) => ({
-          ...todo,
-          user_email: todo.profiles?.email || "Unknown User",
-          user_name: todo.profiles?.full_name || null
-        }));
+        const todosWithUsers = todosData?.map((todo: any) => {
+          const profile = profilesMap.get(todo.user_id);
+          return {
+            ...todo,
+            user_email: profile?.email || "Unknown User",
+            user_name: profile?.full_name || null
+          };
+        });
 
         setTodos(todosWithUsers || []);
       } else {
