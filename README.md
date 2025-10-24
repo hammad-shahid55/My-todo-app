@@ -39,6 +39,10 @@ A modern, full-stack todo/notes application built with React, TypeScript, and Su
 
 - Node.js (version 16 or higher)
 - npm or yarn
+- **For Android development**:
+  - Android Studio (latest version)
+  - Android SDK (API level 33 or higher)
+  - Java Development Kit (JDK) 17
 
 ### Steps
 
@@ -88,10 +92,10 @@ A modern, full-stack todo/notes application built with React, TypeScript, and Su
    - Build and deploy as a mobile app using Capacitor:
      ```bash
      npm run build
-     npx cap add ios  # or android
-     npx cap sync
-     npx cap open ios  # or android
+     npx cap sync android
+     npx cap open android
      ```
+   - This will open Android Studio where you can run the app on an emulator or physical device.
 
 ## Scripts
 
