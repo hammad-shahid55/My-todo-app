@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { AddTodo } from "@/components/AddTodo";
 import { TodoItem } from "@/components/TodoItem";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -184,14 +185,17 @@ const Index = () => {
               </p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleSignOut}
-            className="rounded-full hover:bg-destructive/10 hover:text-destructive transition-all duration-300"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSignOut}
+              className="rounded-full hover:bg-destructive/10 hover:text-destructive transition-all duration-300"
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Add Todo - Hidden for admins */}
