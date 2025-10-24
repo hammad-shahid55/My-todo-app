@@ -14,29 +14,29 @@ A modern, full-stack notes application built with React, TypeScript, and Supabas
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core Functionality
-- 🔐 **Secure Authentication** - Email/password authentication powered by Supabase Auth
-- 📝 **Rich Note Management** - Create, edit, delete, and organize notes with titles and detailed content
-- ✅ **Task Completion** - Mark notes as complete with visual indicators
-- 🔍 **Smart Filtering** - Filter notes by All, Active, or Completed status
-- 👥 **Admin Dashboard** - Special admin role to view all users' notes (optional)
+- **Secure Authentication** - Email/password authentication powered by Supabase Auth
+- **Rich Note Management** - Create, edit, delete, and organize notes with titles and detailed content
+- **Task Completion** - Mark notes as complete with visual indicators
+- **Smart Filtering** - Filter notes by All, Active, or Completed status
+- **Admin Dashboard** - Special admin role to view all users' notes (optional)
 
 ### User Experience
-- 🌓 **Dark/Light Theme** - Toggle between beautiful dark and light modes with system preference support
-- 📱 **Mobile-First Design** - Fully responsive interface optimized for all screen sizes
-- ⚡ **Real-time Sync** - Instant synchronization across all devices using Supabase real-time subscriptions
-- 🎨 **Modern UI** - Sleek gradient-based design with smooth animations and transitions
-- 🚀 **Native Mobile App** - Android APK with native performance via Capacitor
+- **Dark/Light Theme** - Toggle between beautiful dark and light modes with system preference support
+- **Mobile-First Design** - Fully responsive interface optimized for all screen sizes
+- **Real-time Sync** - Instant synchronization across all devices using Supabase real-time subscriptions
+- **Modern UI** - Sleek gradient-based design with smooth animations and transitions
+- **Native Mobile App** - Android APK with native performance via Capacitor
 
 ### Technical Features
-- 💾 **Persistent Storage** - Cloud-based storage with automatic backups
-- 🔄 **Offline Support** - LocalStorage integration for seamless offline experience
-- 🎯 **Type Safety** - Full TypeScript implementation for robust code
-- 🧩 **Component Library** - Built with ShadCN/UI for consistent, accessible components
+- **Persistent Storage** - Cloud-based storage with automatic backups
+- **Offline Support** - LocalStorage integration for seamless offline experience
+- **Type Safety** - Full TypeScript implementation for robust code
+- **Component Library** - Built with ShadCN/UI for consistent, accessible components
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 | Technology | Purpose |
@@ -71,7 +71,7 @@ A modern, full-stack notes application built with React, TypeScript, and Supabas
 | **TypeScript ESLint** | TypeScript-specific linting rules |
 | **Git** | Version control |
 
-## 📦 Installation
+## Installation
 
 ### Prerequisites
 
@@ -122,9 +122,9 @@ Ensure you have the following installed on your system:
    npm run dev
    ```
    
-   Open [http://localhost:8080](http://localhost:8080) in your browser 🚀
+   Open [http://localhost:8080](http://localhost:8080) in your browser
 
-## 🚀 Usage
+## Usage
 
 ### Web Application
 
@@ -154,7 +154,7 @@ Ensure you have the following installed on your system:
    - Notes display with user email and name
    - Read-only access (cannot edit other users' notes)
 
-## 📱 Building for Production
+## Building for Production
 
 ### Web Build
 
@@ -205,9 +205,9 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 **Signing Configuration:**
 - Keystore: `android/app/my-notes-release-key.keystore`
 - Alias: `my-notes-key`
-- Password: `mynotes123` (⚠️ Change in production!)
+- Password: `mynotes123` (Change in production!)
 
-## 📜 Available Scripts
+## Available Scripts
 
 | Command | Description |
 |---------|-------------|
@@ -217,7 +217,7 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 | `npm run lint` | Run ESLint code quality checks |
 | `npm run preview` | Preview production build locally |
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 my-notes-app/
@@ -253,7 +253,7 @@ my-notes-app/
 └── vite.config.ts            # Vite build configuration
 ```
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Here's how you can help:
 
@@ -296,17 +296,17 @@ We welcome contributions! Here's how you can help:
 
 ### Code Guidelines
 
-- ✅ Use TypeScript for type safety
-- ✅ Follow React best practices and hooks patterns
-- ✅ Keep components small and focused
-- ✅ Write meaningful commit messages
-- ✅ Update documentation for new features
+- Use TypeScript for type safety
+- Follow React best practices and hooks patterns
+- Keep components small and focused
+- Write meaningful commit messages
+- Update documentation for new features
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **[Supabase](https://supabase.com)** - Backend infrastructure and real-time database
 - **[ShadCN/UI](https://ui.shadcn.com)** - Beautiful, accessible component library
@@ -314,20 +314,20 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **[Tailwind CSS](https://tailwindcss.com)** - Utility-first CSS framework
 - **[Capacitor](https://capacitorjs.com)** - Native mobile app framework
 
-## 📞 Support
+## Support
 
 For issues, questions, or suggestions:
 
-- 🐛 **Bug Reports**: Open an issue on GitHub
-- 💡 **Feature Requests**: Start a discussion
-- 📧 **Contact**: [Your contact information]
+- **Bug Reports**: Open an issue on GitHub
+- **Feature Requests**: Start a discussion
+- **Contact**: [Your contact information]
 
 ---
 
 <div align="center">
 
-**Built with using React, TypeScript, and Supabase**
+**Built with React, TypeScript, and Supabase**
 
-⭐ Star this repo if you find it helpful!
+Star this repo if you find it helpful!
 
 </div>
