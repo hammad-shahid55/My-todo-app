@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -91,11 +92,11 @@ const Auth = () => {
           });
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An error occurred",
       });
     } finally {
       setLoading(false);
@@ -107,22 +108,22 @@ const Auth = () => {
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-      <Card className="w-full max-w-md shadow-card">
+      <Card className="w-full max-w-md shadow-card transition-all duration-200">
         <CardHeader className="space-y-2 text-center">
           <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-soft">
             <CheckCircle2 className="w-8 h-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent transition-all duration-150">
             {isLogin ? "Welcome Back" : "Create Account"}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="transition-all duration-150">
             {isLogin ? "Sign in to access your todos" : "Sign up to get started"}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleAuth} className="space-y-4">
+          <form onSubmit={handleAuth} className="space-y-4" key={isLogin ? 'login' : 'signup'} autoComplete="on">
             {!isLogin && (
-              <div className="space-y-2">
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
                 <Label htmlFor="fullName">Full Name</Label>
                 <Input
                   id="fullName"
@@ -131,7 +132,8 @@ const Auth = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  className="transition-all duration-300 focus:shadow-soft"
+                  autoComplete="name"
+                  className="transition-all duration-200 focus:shadow-soft"
                 />
               </div>
             )}
@@ -144,7 +146,8 @@ const Auth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="transition-all duration-300 focus:shadow-soft"
+                autoComplete="email"
+                className="transition-all duration-200 focus:shadow-soft"
               />
             </div>
             <div className="space-y-2">
@@ -157,12 +160,13 @@ const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="transition-all duration-300 focus:shadow-soft"
+                autoComplete={isLogin ? "current-password" : "new-password"}
+                className="transition-all duration-200 focus:shadow-soft"
               />
             </div>
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 shadow-soft"
+              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-150 shadow-soft active:scale-[0.98]"
               disabled={loading}
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -172,15 +176,19 @@ const Auth = () => {
           <div className="mt-4 text-center text-sm space-y-2">
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:text-accent transition-colors duration-300"
+              onClick={() => {
+                startTransition(() => {
+                  setIsLogin(!isLogin);
+                });
+              }}
+              className="text-primary hover:text-accent transition-colors duration-150 font-medium"
             >
               {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
             </button>
             <div>
               <a
                 href="/admin-auth"
-                className="text-muted-foreground hover:text-primary transition-colors duration-300"
+                className="text-muted-foreground hover:text-primary transition-colors duration-150"
               >
                 Admin? Sign in here
               </a>

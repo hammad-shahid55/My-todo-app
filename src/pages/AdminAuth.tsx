@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ const AdminAuth = () => {
   const [password, setPassword] = useState("");
   const [adminCredential, setAdminCredential] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -128,11 +129,11 @@ const AdminAuth = () => {
           }
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An error occurred",
       });
     } finally {
       setLoading(false);
@@ -144,20 +145,20 @@ const AdminAuth = () => {
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
-      <Card className="w-full max-w-md shadow-card">
+      <Card className="w-full max-w-md shadow-card transition-all duration-200">
         <CardHeader className="space-y-2 text-center">
           <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-soft">
             <Shield className="w-8 h-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent transition-all duration-150">
             {isLogin ? "Admin Login" : "Admin Registration"}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="transition-all duration-150">
             {isLogin ? "Sign in with admin credentials" : "Create an admin account"}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleAuth} className="space-y-4">
+          <form onSubmit={handleAuth} className="space-y-4" key={isLogin ? 'login' : 'signup'} autoComplete="on">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -167,7 +168,8 @@ const AdminAuth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="transition-all duration-300 focus:shadow-soft"
+                autoComplete="email"
+                className="transition-all duration-200 focus:shadow-soft"
               />
             </div>
             <div className="space-y-2">
@@ -180,11 +182,12 @@ const AdminAuth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="transition-all duration-300 focus:shadow-soft"
+                autoComplete={isLogin ? "current-password" : "new-password"}
+                className="transition-all duration-200 focus:shadow-soft"
               />
             </div>
             {!isLogin && (
-              <div className="space-y-2">
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
                 <Label htmlFor="adminCredential">Admin Credential *</Label>
                 <Input
                   id="adminCredential"
@@ -193,7 +196,8 @@ const AdminAuth = () => {
                   value={adminCredential}
                   onChange={(e) => setAdminCredential(e.target.value)}
                   required
-                  className="transition-all duration-300 focus:shadow-soft"
+                  autoComplete="off"
+                  className="transition-all duration-200 focus:shadow-soft"
                 />
                 <p className="text-xs text-muted-foreground">
                   Admin credential is required to create an admin account
@@ -202,7 +206,7 @@ const AdminAuth = () => {
             )}
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 shadow-soft"
+              className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-150 shadow-soft active:scale-[0.98]"
               disabled={loading}
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -212,15 +216,19 @@ const AdminAuth = () => {
           <div className="mt-4 text-center text-sm space-y-2">
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:text-accent transition-colors duration-300"
+              onClick={() => {
+                startTransition(() => {
+                  setIsLogin(!isLogin);
+                });
+              }}
+              className="text-primary hover:text-accent transition-colors duration-150 font-medium"
             >
               {isLogin ? "Don't have an admin account? Register" : "Already have an admin account? Sign in"}
             </button>
             <div>
               <a
                 href="/auth"
-                className="text-muted-foreground hover:text-primary transition-colors duration-300"
+                className="text-muted-foreground hover:text-primary transition-colors duration-150"
               >
                 Regular user? Sign in here
               </a>
