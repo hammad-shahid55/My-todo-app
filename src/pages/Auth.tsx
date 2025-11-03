@@ -41,19 +41,31 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         
         if (error) throw error;
         
+        // Check if email is verified
+        if (data.user && !data.user.email_confirmed_at) {
+          await supabase.auth.signOut();
+          toast({
+            variant: "destructive",
+            title: "Email Not Verified",
+            description: "Please verify your email before logging in. Check your inbox for the verification link.",
+          });
+          setLoading(false);
+          return;
+        }
+        
         toast({
           title: "Welcome back!",
           description: "You've successfully logged in.",
         });
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -66,10 +78,18 @@ const Auth = () => {
         
         if (error) throw error;
         
-        toast({
-          title: "Account created!",
-          description: "You can now start using the app.",
-        });
+        // Check if email confirmation is required
+        if (data.user && !data.session) {
+          toast({
+            title: "Verification Email Sent!",
+            description: "Please check your email and click the verification link to activate your account.",
+          });
+        } else {
+          toast({
+            title: "Account created!",
+            description: "You can now start using the app.",
+          });
+        }
       }
     } catch (error: any) {
       toast({

@@ -41,12 +41,24 @@ const AdminAuth = () => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         
         if (error) throw error;
+        
+        // Check if email is verified
+        if (data.user && !data.user.email_confirmed_at) {
+          await supabase.auth.signOut();
+          toast({
+            variant: "destructive",
+            title: "Email Not Verified",
+            description: "Please verify your email before logging in. Check your inbox for the verification link.",
+          });
+          setLoading(false);
+          return;
+        }
         
         toast({
           title: "Welcome back, Admin!",
@@ -76,7 +88,22 @@ const AdminAuth = () => {
         
         if (error) throw error;
         
-        if (data.user) {
+        // Check if email confirmation is required
+        if (data.user && !data.session) {
+          toast({
+            title: "Verification Email Sent!",
+            description: "Please check your email and click the verification link. After verification, your admin role will be activated.",
+          });
+          
+          // Try to assign admin role anyway (will be active after email verification)
+          try {
+            await supabase.functions.invoke('set-admin-role', {
+              body: { userId: data.user.id, adminCredential }
+            });
+          } catch (roleError) {
+            console.error("Error calling set-admin-role:", roleError);
+          }
+        } else if (data.user) {
           try {
             const { error: roleError } = await supabase.functions.invoke('set-admin-role', {
               body: { userId: data.user.id, adminCredential }
