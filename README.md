@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20Web-lightgrey.svg)
 
@@ -24,10 +24,11 @@ A modern, full-stack notes application built with React, TypeScript, and Supabas
 - **Admin Dashboard** - Special admin role to view all users' notes (optional)
 
 ### User Experience
+- **⚡ Fast Navigation** - Lightning-fast transitions between sign-in/sign-up with React.useTransition (50% faster)
 - **Dark/Light Theme** - Toggle between beautiful dark and light modes with system preference support
 - **Mobile-First Design** - Fully responsive interface optimized for all screen sizes
 - **Real-time Sync** - Instant synchronization across all devices using Supabase real-time subscriptions
-- **Modern UI** - Sleek gradient-based design with smooth animations and transitions
+- **Modern UI** - Sleek gradient-based design with smooth animations and optimized transitions
 - **Native Mobile App** - Android APK with native performance via Capacitor
 
 ### Technical Features
@@ -35,6 +36,8 @@ A modern, full-stack notes application built with React, TypeScript, and Supabas
 - **Offline Support** - LocalStorage integration for seamless offline experience
 - **Type Safety** - Full TypeScript implementation for robust code
 - **Component Library** - Built with ShadCN/UI for consistent, accessible components
+- **Performance Optimized** - Non-blocking UI updates with concurrent rendering
+- **Enhanced Autofill** - Smart form autocomplete for faster authentication
 
 ## Tech Stack
 
@@ -202,6 +205,8 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 
 **Release APK Location:** `android/app/build/outputs/apk/release/app-release.apk`
 
+**Latest APK:** `my-notes-app-v1.1.0.apk` (in project root)
+
 **Signing Configuration:**
 - Keystore: `android/app/my-notes-release-key.keystore`
 - Alias: `my-notes-key`
@@ -252,6 +257,39 @@ my-notes-app/
 ├── tsconfig.json             # TypeScript configuration
 └── vite.config.ts            # Vite build configuration
 ```
+
+## Performance Improvements (v1.1.0)
+
+### Authentication Navigation
+- **50% Faster Transitions** - Reduced animation durations from 300ms to 150ms
+- **Instant State Changes** - Implemented React.useTransition for non-blocking UI updates
+- **Smooth Animations** - Added slide-in effects for form fields with optimized timing
+- **Better Touch Feedback** - Active button states with scale animations
+- **Enhanced Autofill** - Proper autocomplete attributes for faster form filling
+- **Form Optimization** - Key-based form remounting prevents state conflicts
+
+### Technical Optimizations
+- Non-blocking state transitions using concurrent features
+- Reduced animation overhead across all interactive elements
+- Improved TypeScript error handling
+- Better browser integration with native autofill
+
+## Changelog
+
+### Version 1.1.0 (November 2025)
+- ⚡ **Performance**: 50% faster sign-in/sign-up navigation
+- ✨ **UX**: Smooth slide-in animations for form fields
+- 🎯 **Optimization**: React.useTransition for instant state updates
+- 🔐 **Enhancement**: Better autofill support for authentication
+- 🐛 **Fix**: TypeScript error handling improvements
+- 📱 **Mobile**: Optimized touch feedback for better mobile experience
+
+### Version 1.0.0 (Initial Release)
+- 🎉 Full-featured notes application
+- 🔐 Secure authentication with Supabase
+- 📱 Android mobile app support
+- 🌓 Dark/light theme support
+- 📊 Admin dashboard functionality
 
 ## Contributing
 
