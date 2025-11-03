@@ -277,19 +277,19 @@ my-notes-app/
 ## Changelog
 
 ### Version 1.1.0 (November 2025)
-- ⚡ **Performance**: 50% faster sign-in/sign-up navigation
-- ✨ **UX**: Smooth slide-in animations for form fields
-- 🎯 **Optimization**: React.useTransition for instant state updates
-- 🔐 **Enhancement**: Better autofill support for authentication
-- 🐛 **Fix**: TypeScript error handling improvements
-- 📱 **Mobile**: Optimized touch feedback for better mobile experience
+- **Performance**: 50% faster sign-in/sign-up navigation
+- **UX**: Smooth slide-in animations for form fields
+- **Optimization**: React.useTransition for instant state updates
+- **Enhancement**: Better autofill support for authentication
+- **Fix**: TypeScript error handling improvements
+- **Mobile**: Optimized touch feedback for better mobile experience
 
 ### Version 1.0.0 (Initial Release)
-- 🎉 Full-featured notes application
-- 🔐 Secure authentication with Supabase
-- 📱 Android mobile app support
-- 🌓 Dark/light theme support
-- 📊 Admin dashboard functionality
+- Full-featured notes application
+- Secure authentication with Supabase
+- Android mobile app support
+- Dark/light theme support
+- Admin dashboard functionality
 
 ## Contributing
 
