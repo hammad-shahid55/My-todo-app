@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AddTodo } from "@/components/AddTodo";
 import { TodoItem } from "@/components/TodoItem";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TodoListSkeleton } from "@/components/LoadingSkeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -170,8 +171,23 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/30 to-background">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background p-4 pb-safe">
+        <div className="max-w-2xl mx-auto pt-8 space-y-6">
+          <div className="flex items-center justify-between mb-8 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-soft">
+                <CheckCircle2 className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Loading...
+                </h1>
+              </div>
+            </div>
+            <ThemeToggle />
+          </div>
+          <TodoListSkeleton />
+        </div>
       </div>
     );
   }
@@ -226,26 +242,34 @@ const Index = () => {
         </Tabs>
 
         {/* Todo List */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           {filteredTodos.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <p className="text-lg">No notes here yet!</p>
-              {!isAdmin && <p className="text-sm mt-2">Click above to create your first note.</p>}
-              {isAdmin && <p className="text-sm mt-2">No user notes to display.</p>}
+            <div className="text-center py-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                <CheckCircle2 className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <p className="text-lg font-medium text-foreground mb-2">No notes here yet!</p>
+              {!isAdmin && <p className="text-sm text-muted-foreground">Click above to create your first note.</p>}
+              {isAdmin && <p className="text-sm text-muted-foreground">No user notes to display.</p>}
             </div>
           ) : (
-            filteredTodos.map((todo) => (
-              <TodoItem
+            filteredTodos.map((todo, index) => (
+              <div
                 key={todo.id}
-                id={todo.id}
-                title={todo.title}
-                content={todo.content}
-                completed={todo.completed}
-                onUpdate={fetchTodos}
-                userEmail={isAdmin ? todo.user_email : undefined}
-                userName={isAdmin ? todo.user_name : undefined}
-                isAdminView={isAdmin}
-              />
+                className="animate-in fade-in slide-in-from-bottom-2 duration-300"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <TodoItem
+                  id={todo.id}
+                  title={todo.title}
+                  content={todo.content}
+                  completed={todo.completed}
+                  userEmail={todo.user_email}
+                  userName={todo.user_name}
+                  isAdminView={isAdmin}
+                  onUpdate={fetchTodos}
+                />
+              </div>
             ))
           )}
         </div>
