@@ -7,7 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Shield } from "lucide-react";
+import { Loader2, Shield, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { PasswordStrength } from "@/components/PasswordStrength";
+import { signInSchema, adminSignUpSchema } from "@/lib/validations/auth";
 
 const AdminAuth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +18,8 @@ const AdminAuth = () => {
   const [adminCredential, setAdminCredential] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -37,6 +41,24 @@ const AdminAuth = () => {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+    
+    // Validate inputs
+    try {
+      if (isLogin) {
+        signInSchema.parse({ email, password });
+      } else {
+        adminSignUpSchema.parse({ email, password });
+      }
+    } catch (error: any) {
+      const fieldErrors: Record<string, string> = {};
+      error.errors?.forEach((err: any) => {
+        fieldErrors[err.path[0]] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -166,25 +188,51 @@ const AdminAuth = () => {
                 type="email"
                 placeholder="admin@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErrors(prev => ({ ...prev, email: "" }));
+                }}
                 autoComplete="email"
-                className="transition-all duration-200 focus:shadow-soft"
+                className={`transition-all duration-200 focus:shadow-soft ${errors.email ? "border-destructive" : ""}`}
               />
+              {errors.email && (
+                <p className="text-xs text-destructive flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-150">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.email}
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                autoComplete={isLogin ? "current-password" : "new-password"}
-                className="transition-all duration-200 focus:shadow-soft"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors(prev => ({ ...prev, password: "" }));
+                  }}
+                  autoComplete={isLogin ? "current-password" : "new-password"}
+                  className={`transition-all duration-200 focus:shadow-soft pr-10 ${errors.password ? "border-destructive" : ""}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-xs text-destructive flex items-center gap-1 animate-in fade-in slide-in-from-top-1 duration-150">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.password}
+                </p>
+              )}
+              {!isLogin && <PasswordStrength password={password} />}
             </div>
             {!isLogin && (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
